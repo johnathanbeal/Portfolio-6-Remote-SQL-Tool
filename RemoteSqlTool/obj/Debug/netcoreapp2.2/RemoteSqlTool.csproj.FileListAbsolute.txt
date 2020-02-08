@@ -1,0 +1,8 @@
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\bin\Debug\netcoreapp2.2\RemoteSqlTool.deps.json
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\bin\Debug\netcoreapp2.2\RemoteSqlTool.runtimeconfig.json
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\bin\Debug\netcoreapp2.2\RemoteSqlTool.runtimeconfig.dev.json
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\bin\Debug\netcoreapp2.2\RemoteSqlTool.dll
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp2.2\RemoteSqlTool.csprojAssemblyReference.cache
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp2.2\RemoteSqlTool.csproj.CoreCompileInputs.cache
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp2.2\RemoteSqlTool.AssemblyInfoInputs.cache
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp2.2\RemoteSqlTool.AssemblyInfo.cs
