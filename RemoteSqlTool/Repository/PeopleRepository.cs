@@ -6,20 +6,33 @@ using Npgsql;
 
 namespace RemoteSqlTool.Repository
 {
-    class PeopleRepository
+    public class PeopleRepository
     {
         public async Task InsertIntoAwsRdsInstance()
         {
-            var connString = "Host=rolodex-2.cr4dat7cc46x.us-east-2.rds.amazonaws.com;Username=*;Password=*;Database=rolodex-2";
-            await using NpgsqlConnection conn = new NpgsqlConnection(connString);
-            await conn.OpenAsync();
+            NpgsqlConnectionStringBuilder NpgConnectionString = new NpgsqlConnectionStringBuilder();
+            NpgConnectionString.Host = "rolodex-2.cr4dat7cc46x.us-east-2.rds.amazonaws.com";
+            NpgConnectionString.Username = "postgres";
+            NpgConnectionString.Password = "postgres";
+            NpgConnectionString.Port = 5432;
+            NpgConnectionString.Database = "rolodex";
+
+            var connString = "Server=rolodex-2.cr4dat7cc46x.us-east-2.rds.amazonaws.com;Username=Postgres;Password=Postgres;Database=rolodex-2;Port=5432";
+            await using NpgsqlConnection conn = new NpgsqlConnection(NpgConnectionString.ConnectionString);
+
+            try
+            {
+                await conn.OpenAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
             //    // Insert some data
-            await using (var cmd = new NpgsqlCommand("INSERT INTO data (some_field) VALUES (@p)", conn))
+            await using (var cmd = new NpgsqlCommand("INSERT INTO people (firstname) VALUES (@p)", conn))
             {
-                NpgsqlParameter p = new NpgsqlParameter();
-                p.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text;
-                cmd.Parameters.AddWithValue("p", "Hello world");
+                cmd.Parameters.AddWithValue("p", "Johnathan");
                 await cmd.ExecuteNonQueryAsync();
             }
 
