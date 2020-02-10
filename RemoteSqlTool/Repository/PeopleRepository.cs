@@ -10,7 +10,7 @@ namespace RemoteSqlTool.Repository
 {
     public class PeopleRepository
     {
-        public async Task<PeopleEntity> SelectFromPeopleTable()
+        public async Task<List<PeopleEntity>> SelectFromPeopleTable()
         {
             NpgsqlConnectionStringBuilder NpgCString = new NpgsqlConnectionStringBuilder();
             NpgCString.Host = "rolodex2.cr4dat7cc46x.us-east-2.rds.amazonaws.com";
@@ -33,7 +33,8 @@ namespace RemoteSqlTool.Repository
             await using (var cmd = new NpgsqlCommand("SELECT * FROM people"))
             {
                 cmd.Connection = conn;
-                PeopleEntity person = new PeopleEntity();
+
+                int headCount = 0;
                 //int id;
                 //string firstname;
                 //string lastname;
@@ -49,14 +50,21 @@ namespace RemoteSqlTool.Repository
                 //}
 
                 NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    person.Id = Int32.Parse(reader[0].ToString());
-                    person.Firstname = reader[1].ToString();
-                    person.Lastname = reader[2].ToString();
-                    person.Email = reader[3].ToString();
-                    person.CreatedDate = DateTime.Parse(reader[4].ToString());
-                }
+                List<PeopleEntity> person = new List<PeopleEntity>();
+
+
+                    while (await reader.ReadAsync())
+                    {
+                    person.Add(new PeopleEntity()
+                    {
+                        Id = Int32.Parse(reader[0].ToString()),
+                        Firstname = reader[1].ToString(),
+                        Lastname = reader[2].ToString(),
+                        Email = reader[3].ToString(),
+                        CreatedDate = DateTime.Parse(reader[4].ToString())
+                    });
+                    }
+                                
                 return person;
             }
         }
