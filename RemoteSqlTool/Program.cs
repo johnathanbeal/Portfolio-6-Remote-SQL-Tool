@@ -8,10 +8,13 @@ namespace RemoteSqlTool
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             PeopleRepository pr = new PeopleRepository();
-            var v = pr.InsertIntoAwsRdsInstance();
+
+            var selectResult = await pr.SelectFromPeopleTable();
+            //Task results = 
+                //pr.InsertIntoAwsRdsInstance();
             Console.WriteLine("Hello World!");
         }
     }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RemoteSqlTool.Entities
 {
-    class PeopleEntity
+    public class PeopleEntity
     {      
             public int Id { get; set; }
             public string Firstname { get; set; }
