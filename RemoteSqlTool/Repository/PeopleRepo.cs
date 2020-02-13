@@ -8,31 +8,14 @@ using RemoteSqlTool.Entities;
 
 namespace RemoteSqlTool.Repository
 {
-    public class PeopleRepository
+    public class PeopleRepo
     {
-        public async Task<List<PeopleEntity>> SelectFromPeopleTable()
+        public async Task<List<PeopleEntity>> SelectFromPeopleTable(NpgsqlConnection npgSqlConn)
         {
-            NpgsqlConnectionStringBuilder NpgCString = new NpgsqlConnectionStringBuilder();
-            NpgCString.Host = "rolodex2.cr4dat7cc46x.us-east-2.rds.amazonaws.com";
-            NpgCString.Username = "postgres";
-            NpgCString.Password = "postgres";
-            NpgCString.Port = 5432;
-            NpgCString.Database = "rolodex";
-
-            await using NpgsqlConnection conn = new NpgsqlConnection(NpgCString.ConnectionString);
-
-            try
-            {
-                await conn.OpenAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
+            
             await using (var cmd = new NpgsqlCommand("SELECT * FROM people"))
             {
-                cmd.Connection = conn;
+                cmd.Connection = npgSqlConn;
 
                 int headCount = 0;
                 //int id;
