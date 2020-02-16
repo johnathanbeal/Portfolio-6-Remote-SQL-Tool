@@ -17,8 +17,10 @@ namespace RemoteSqlTool.UI
                 Console.WriteLine("Enter " + ac);
                 inputs.Add(Console.ReadLine());
             }
-
-            AC.Host = inputs[0];
+            if (inputs[0] != "")
+            {
+                AC.Host = inputs[0];
+            }
             AC.Username = inputs[1];
             AC.Password = inputs[2];
             AC.Database = inputs[3];

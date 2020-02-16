@@ -10,44 +10,57 @@ namespace RemoteSqlTool.Repository
 {
     public class PeopleRepo
     {
-        public async Task<List<PeopleEntity>> SelectFromPeopleTable(NpgsqlConnection npgSqlConn)
+        public async Task<List<PeopleEntity>> SelectFromPeopleTable(string connString)
         {
-            
+            List<PeopleEntity> person = new List<PeopleEntity>();
+
+            await using NpgsqlConnection conn = new NpgsqlConnection(connString);
+
+            try
+            {
+                await conn.OpenAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
             await using (var cmd = new NpgsqlCommand("SELECT * FROM people"))
             {
-                cmd.Connection = npgSqlConn;
+                cmd.Connection = conn;
 
                 int headCount = 0;
-                //int id;
-                //string firstname;
-                //string lastname;
-                //string email;
-                //DateTime cd;
+                
                 var format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz '(GMT Daylight Time)'";
 
-                //// Retrieve all rows
-                //await using (var cmd = new NpgsqlCommand("SELECT some_field FROM data", conn))
-                //await using (var reader = await cmd.ExecuteReaderAsync())
-                //    while (await reader.ReadAsync())
-                //        Console.WriteLine(reader.GetString(0));
-                //}
+                //List<PeopleEntity> person = new List<PeopleEntity>();
 
-                NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                List<PeopleEntity> person = new List<PeopleEntity>();
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
 
-
-                    while (await reader.ReadAsync())
+                    try
                     {
-                    person.Add(new PeopleEntity()
-                    {
-                        Id = Int32.Parse(reader[0].ToString()),
-                        Firstname = reader[1].ToString(),
-                        Lastname = reader[2].ToString(),
-                        Email = reader[3].ToString(),
-                        CreatedDate = DateTime.Parse(reader[4].ToString())
-                    });
+                        while (await reader.ReadAsync())
+                        {
+                            var debug = reader[0];
+                            person.Add(new PeopleEntity()
+                            {
+
+
+                                Firstname = reader[0].ToString(),
+                                Lastname = reader[1].ToString(),
+                                Email = reader[2].ToString(),
+                                CreatedDate = DateTime.Parse(reader[3].ToString()),
+                                Id = Int32.Parse(reader[4].ToString()),
+                            });
+                        }
                     }
-                                
+                    catch(Exception x)
+                    {
+                        Console.WriteLine("Something went wrong at or after the call to ExecuteReaderAsync():" + x.Message);
+                    }
+                    await cmd.DisposeAsync();
+                }
                 return person;
             }
         }
@@ -70,14 +83,14 @@ namespace RemoteSqlTool.Repository
             try
             {
                 //await 
-                using (var cmd = new NpgsqlCommand("INSERT INTO people (id, firstname, lastname, email, created_date) VALUES (@id, @firstname, @lastname, @email, @created_date)", conn))
+                using (var cmd = new NpgsqlCommand("INSERT INTO people (firstname, lastname, email, created_on) VALUES (@firstname, @lastname, @email, @created_on)", conn))
                 {
                     cmd.Connection = conn;
-                    cmd.Parameters.AddWithValue("id", 2);
+                    //cmd.Parameters.AddWithValue("id", 2);
                     cmd.Parameters.AddWithValue("firstname", "Nina");
                     cmd.Parameters.AddWithValue("lastname", "Locke");
                     cmd.Parameters.AddWithValue("email", "nina.locke@fakeemail.com");
-                    cmd.Parameters.AddWithValue("created_date", DateTime.Now);
+                    cmd.Parameters.AddWithValue("created_on", DateTime.Now);
                     //await 
                     //cmd.ExecuteNonQueryAsync();
                     cmd.ExecuteNonQuery();
