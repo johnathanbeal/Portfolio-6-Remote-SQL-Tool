@@ -112,16 +112,41 @@ namespace RemoteSqlTool
             //    var cd = peopleRecord.CreatedDate.ToString().PadRight(5).PadLeft(2);
             //    Console.WriteLine(id + fn + ln + em + cd);
             //}
+            StringBuilder sb = new StringBuilder();
 
+            PropertyInfo[] properties = fakePeople[0].GetType().GetProperties();
+            foreach (PropertyInfo pi in properties)
+            {
+                sb.Append(
+                    string.Format("Name: {0} | Value: {1}",
+                            pi.Name,
+                            pi.GetValue(fakePeople[0], null)
+                        )
+                );
+            }
+            var PropStringBuilder = new StringBuilder();
+            foreach (PropertyInfo prop in properties)
+            {
+                PropStringBuilder.Append(prop.Name.PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
+            }
+            Console.WriteLine(PropStringBuilder);
             foreach (var peopleRecord in fakePeople)
             {
+                PropertyInfo[] props = peopleRecord.GetType().GetProperties();
+                var printRecord = new StringBuilder();
+                foreach(PropertyInfo prop in props)
+                {
+                    printRecord.Append(prop.GetValue(peopleRecord, null).ToString().PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
+                }
+                Console.WriteLine(printRecord);
+                //Console.WriteLine(nameof(peopleRecord.Id));
                 //Console.WriteLine(peopleRecord.GetType());
-                var id = peopleRecord.Id.ToString().PadRight(3).PadLeft(2) + "|";
-                var fn = peopleRecord.Firstname.PadRight(10).PadLeft(2) + "|";
-                var ln = peopleRecord.Lastname.PadRight(10).PadLeft(2) + "|";
-                var em = peopleRecord.Email.PadRight(25).PadLeft(2) + "|";
-                var cd = peopleRecord.CreatedDate.ToString().PadRight(5).PadLeft(2);
-                Console.WriteLine(id + fn + ln + em + cd);
+                //var id = peopleRecord.Id.ToString().PadRight(20).PadLeft(5) + "|";
+                //var fn = peopleRecord.Firstname.PadRight(20).PadLeft(5) + "|";
+                //var ln = peopleRecord.Lastname.PadRight(20).PadLeft(5) + "|";
+                //var em = peopleRecord.Email.PadRight(20).PadLeft(5) + "|";
+                //var cd = peopleRecord.CreatedDate.ToString().PadRight(20).PadLeft(5);
+                //Console.WriteLine(id + fn + ln + em + cd);
             }
         }
     }
