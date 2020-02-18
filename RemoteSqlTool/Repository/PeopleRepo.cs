@@ -33,26 +33,39 @@ namespace RemoteSqlTool.Repository
                 
                 var format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz '(GMT Daylight Time)'";
 
-                //List<PeopleEntity> person = new List<PeopleEntity>();
-
                 await using (var reader = await cmd.ExecuteReaderAsync())
-                {
-
+                {                    
                     try
                     {
                         while (await reader.ReadAsync())
                         {
-                            var debug = reader[0];
-                            person.Add(new PeopleEntity()
+                           
+                            //var debugSchema = reader.GetColumnSchema();
+
+                                //Console.WriteLine(reader.FieldCount);
+                                //Console.WriteLine(reader.VisibleFieldCount);
+                                //Console.WriteLine(columnValue.ToString());
+                                //var debug5 = reader.Statements;
+                                
+                            try
                             {
-
-
-                                Firstname = reader[0].ToString(),
-                                Lastname = reader[1].ToString(),
-                                Email = reader[2].ToString(),
-                                CreatedDate = DateTime.Parse(reader[3].ToString()),
-                                Id = Int32.Parse(reader[4].ToString()),
-                            });
+                                //var debug = reader[0];
+                                person.Add(new PeopleEntity()
+                                {
+                                    Firstname = reader[0].ToString(),
+                                    Lastname = reader[1].ToString(),
+                                    Email = reader[2].ToString(),
+                                    CreatedDate = DateTime.Parse(reader[3].ToString()),
+                                    Id = Int32.Parse(reader[4].ToString())
+                                });
+                            }
+                            catch(Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                
+                                
+                            }
+                            
                         }
                     }
                     catch(Exception x)
@@ -87,9 +100,9 @@ namespace RemoteSqlTool.Repository
                 {
                     cmd.Connection = conn;
                     //cmd.Parameters.AddWithValue("id", 2);
-                    cmd.Parameters.AddWithValue("firstname", "Nina");
+                    cmd.Parameters.AddWithValue("firstname", "Bode");
                     cmd.Parameters.AddWithValue("lastname", "Locke");
-                    cmd.Parameters.AddWithValue("email", "nina.locke@fakeemail.com");
+                    cmd.Parameters.AddWithValue("email", "bodey.locke@fakeemail.com");
                     cmd.Parameters.AddWithValue("created_on", DateTime.Now);
                     //await 
                     //cmd.ExecuteNonQueryAsync();

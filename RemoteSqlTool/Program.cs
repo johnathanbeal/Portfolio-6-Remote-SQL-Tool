@@ -16,12 +16,12 @@ namespace RemoteSqlTool
     {
         static async Task Main(string[] args)
         {
-            //Interaction inter = new Interaction();///Commented out temporarily
+            Interaction inter = new Interaction();///Commented out temporarily
 
-            //AttestationCharacteristics authInputs = inter.InitialUserPrompts();///Commented out temporarily
+            AttestationCharacteristics authInputs = inter.InitialUserPrompts();///Commented out temporarily
 
-            ////NpgConnector NConn = new NpgConnector(authInputs);///Commented out temporarily
-            //var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
+            NpgConnector NConn = new NpgConnector(authInputs);///Commented out temporarily
+            var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
 
             PeopleRepo people = new PeopleRepo();
             List<PeopleEntity> fakePeople = new List<PeopleEntity>()
@@ -45,8 +45,8 @@ namespace RemoteSqlTool
 
             };
 
-            ///var selectResult = await people.SelectFromPeopleTable(NConString);///Commented out temporarily
-            //people.InsertIntoAwsRdsInstance();///Commented out temporarily
+            people.InsertIntoAwsRdsInstance();///Commented out temporarily
+            var selectResult = await people.SelectFromPeopleTable(NConString);
 
             #region CodeThatDidntWork
             //foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(people))
@@ -102,28 +102,20 @@ namespace RemoteSqlTool
             //}
             #endregion
 
-            //foreach (var peopleRecord in selectResult)///Temporarily commented out
-            //{
-            //    //Console.WriteLine(peopleRecord.GetType());
-            //    var id = peopleRecord.Id.ToString().PadRight(3).PadLeft(2) + "|";
-            //    var fn = peopleRecord.Firstname.PadRight(10).PadLeft(2) + "|";
-            //    var ln = peopleRecord.Lastname.PadRight(10).PadLeft(2) + "|";
-            //    var em = peopleRecord.Email.PadRight(25).PadLeft(2) + "|";
-            //    var cd = peopleRecord.CreatedDate.ToString().PadRight(5).PadLeft(2);
-            //    Console.WriteLine(id + fn + ln + em + cd);
-            //}
-            StringBuilder sb = new StringBuilder();
+            foreach (var peopleRecord in selectResult)///Temporarily commented out
+            {
+                //Console.WriteLine(peopleRecord.GetType());
+                var id = peopleRecord.Id.ToString().PadRight(3).PadLeft(2) + "|";
+                var fn = peopleRecord.Firstname.PadRight(10).PadLeft(2) + "|";
+                var ln = peopleRecord.Lastname.PadRight(10).PadLeft(2) + "|";
+                var em = peopleRecord.Email.PadRight(25).PadLeft(2) + "|";
+                var cd = peopleRecord.CreatedDate.ToString().PadRight(5).PadLeft(2);
+                Console.WriteLine(id + fn + ln + em + cd);
+            }
+            //StringBuilder sb = new StringBuilder();
 
             PropertyInfo[] properties = fakePeople[0].GetType().GetProperties();
-            foreach (PropertyInfo pi in properties)
-            {
-                sb.Append(
-                    string.Format("Name: {0} | Value: {1}",
-                            pi.Name,
-                            pi.GetValue(fakePeople[0], null)
-                        )
-                );
-            }
+            
             var PropStringBuilder = new StringBuilder();
             foreach (PropertyInfo prop in properties)
             {
@@ -139,14 +131,7 @@ namespace RemoteSqlTool
                     printRecord.Append(prop.GetValue(peopleRecord, null).ToString().PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
                 }
                 Console.WriteLine(printRecord);
-                //Console.WriteLine(nameof(peopleRecord.Id));
-                //Console.WriteLine(peopleRecord.GetType());
-                //var id = peopleRecord.Id.ToString().PadRight(20).PadLeft(5) + "|";
-                //var fn = peopleRecord.Firstname.PadRight(20).PadLeft(5) + "|";
-                //var ln = peopleRecord.Lastname.PadRight(20).PadLeft(5) + "|";
-                //var em = peopleRecord.Email.PadRight(20).PadLeft(5) + "|";
-                //var cd = peopleRecord.CreatedDate.ToString().PadRight(20).PadLeft(5);
-                //Console.WriteLine(id + fn + ln + em + cd);
+                
             }
         }
     }

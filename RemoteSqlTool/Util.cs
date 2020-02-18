@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RemoteSqlTool.Repository;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace RemoteSqlTool
     {
         public static int PadSpace(string _propertyName)
         {
-            switch(_propertyName.ToLower())
+            switch (_propertyName.ToLower())
             {
                 case "Id":
                     return 3;
@@ -20,8 +21,14 @@ namespace RemoteSqlTool
                 case "createddate":
                     return 25;
                 default:
-                    return 10;   
+                    return 10;
             }
         }
+
+        //public static List<PeopleAddressEntity> assignReaderValueToCorrectProperty(string readerInput)
+        //{
+        //    List<PeopleAddressEntity> PAEL = new List<PeopleAddressEntity>();
+
+        //}
     }
 }
