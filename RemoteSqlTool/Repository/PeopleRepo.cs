@@ -4,15 +4,16 @@ using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using Npgsql;
+using Npgsql.Schema;
 using RemoteSqlTool.Entities;
 
 namespace RemoteSqlTool.Repository
 {
     public class PeopleRepo
     {
-        public async Task<List<PeopleEntity>> SelectFromPeopleTable(string connString)
+        public async Task<List<PeopleAddressEntity>> SelectFromPeopleTable(string connString, string _sqlQuery)
         {
-            List<PeopleEntity> person = new List<PeopleEntity>();
+            List<PeopleAddressEntity> personWithAddress = new List<PeopleAddressEntity>();
 
             await using NpgsqlConnection conn = new NpgsqlConnection(connString);
 
@@ -25,7 +26,7 @@ namespace RemoteSqlTool.Repository
                 Console.WriteLine(e.Message);
             }
 
-            await using (var cmd = new NpgsqlCommand("SELECT * FROM people"))
+            await using (var cmd = new NpgsqlCommand(_sqlQuery))
             {
                 cmd.Connection = conn;
 
@@ -39,23 +40,24 @@ namespace RemoteSqlTool.Repository
                     {
                         while (await reader.ReadAsync())
                         {
-                           
-                            //var debugSchema = reader.GetColumnSchema();
+                            Util.assignReaderValueToPropertyByNpgsqlDbColumn(reader);
 
-                                //Console.WriteLine(reader.FieldCount);
+                            
+                                Console.WriteLine(reader.FieldCount);
                                 //Console.WriteLine(reader.VisibleFieldCount);
                                 //Console.WriteLine(columnValue.ToString());
-                                //var debug5 = reader.Statements;
+                                var sqlStatement = reader.Statements;
                                 
                             try
                             {
                                 //var debug = reader[0];
-                                person.Add(new PeopleEntity()
+                                personWithAddress.Add(new PeopleAddressEntity()
                                 {
+                                    
                                     Firstname = reader[0].ToString(),
                                     Lastname = reader[1].ToString(),
                                     Email = reader[2].ToString(),
-                                    CreatedDate = DateTime.Parse(reader[3].ToString()),
+                                    //CreatedDate = DateTime.Parse(reader[3].ToString()),
                                     Id = Int32.Parse(reader[4].ToString())
                                 });
                             }
@@ -74,7 +76,7 @@ namespace RemoteSqlTool.Repository
                     }
                     await cmd.DisposeAsync();
                 }
-                return person;
+                return personWithAddress;
             }
         }
 

@@ -23,7 +23,16 @@ namespace RemoteSqlTool
             NpgConnector NConn = new NpgConnector(authInputs);///Commented out temporarily
             var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
 
+            Console.WriteLine("Enter a SQL Query: ");
+            var sqlQuery = Console.ReadLine();
             PeopleRepo people = new PeopleRepo();
+            Npgsql.Schema.NpgsqlDbColumn columns;
+            List<PeopleAddressEntity> queryResult = new List<PeopleAddressEntity>();
+            if (sqlQuery.ToLower().Contains("select"))
+            {
+                queryResult = await people.SelectFromPeopleTable(NConString, sqlQuery);
+            }
+
             List<PeopleEntity> fakePeople = new List<PeopleEntity>()
             {
             new PeopleEntity()
@@ -46,63 +55,11 @@ namespace RemoteSqlTool
             };
 
             people.InsertIntoAwsRdsInstance();///Commented out temporarily
-            var selectResult = await people.SelectFromPeopleTable(NConString);
+            
 
-            #region CodeThatDidntWork
-            //foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(people))
-            //{
-            //    Console.WriteLine(descriptor.Name);
-            //}
-            //var debug1 = typeof(PeopleRepo);
-            //var debug2 = people.GetType();
-            //var debug3 = debug1.GetTypeInfo();
-            //var debugFields = debug3.GetFields();
+            
 
-            //foreach (var debug in debugFields)
-            //{
-            //    Console.WriteLine(debug);
-            //    Console.WriteLine(debug.Name);
-            //    Console.WriteLine(debug.FieldType);
-            //    Console.WriteLine(debug.ToString());
-            //}
-
-            //PropertyInfo[] propertyInfos = typeof(PeopleRepo).GetProperties();
-            //foreach (var propInfo in propertyInfos)
-            //{
-            //    Console.WriteLine(propInfo.Name);
-            //}
-
-            //Type type = typeof(PeopleRepo);
-            //FieldInfo[] fields = type.GetFields();
-            //string headerColumn;
-            //for (int i = 0; i < fields.Length; i++)
-            //{
-            //    var id = fields[0].ToString().PadRight(3).PadLeft(2) + "|";
-            //    var fn = fields[1].ToString().PadRight(10).PadLeft(2) + "|";
-            //    var ln = fields[2].ToString().PadRight(10).PadLeft(2) + "|";
-            //    var em = fields[3].ToString().PadRight(25).PadLeft(2) + "|";
-            //    var cd = fields[4].ToString().PadRight(5).PadLeft(2);
-            //    headerColumn = id + fn + ln + em + cd;
-            //    Console.WriteLine(headerColumn);
-
-            //}
-
-            //Type type2 = people.GetType();
-            //PropertyInfo[] properties = type.GetProperties();
-
-            //foreach (PropertyInfo property in properties)
-            //{
-            //    Console.WriteLine("Name: " + property.Name + ", Value: " + property.GetValue(type2, null));
-            //}
-
-            //foreach (var peopleRecord in selectResult)
-            //{
-            //    Console.WriteLine(peopleRecord.Id.GetType());
-
-            //}
-            #endregion
-
-            foreach (var peopleRecord in selectResult)///Temporarily commented out
+            foreach (var peopleRecord in queryResult)///Temporarily commented out
             {
                 //Console.WriteLine(peopleRecord.GetType());
                 var id = peopleRecord.Id.ToString().PadRight(3).PadLeft(2) + "|";
