@@ -22,17 +22,28 @@ namespace RemoteSqlTool
 
             NpgConnector NConn = new NpgConnector(authInputs);///Commented out temporarily
             var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
-
-            Console.WriteLine("Enter a SQL Query: ");
-            var sqlQuery = Console.ReadLine();
-            PeopleRepo people = new PeopleRepo();
-            Npgsql.Schema.NpgsqlDbColumn columns;
-            List<PeopleAddressEntity> queryResult = new List<PeopleAddressEntity>();
-            if (sqlQuery.ToLower().Contains("select"))
+            var processAQuery = true;
+            while (processAQuery)
             {
-                queryResult = await people.SelectFromPeopleTable(NConString, sqlQuery);
+                Console.WriteLine("Enter a SQL Query: ");
+                var sqlQuery = Console.ReadLine();
+                PeopleRepo people = new PeopleRepo();
+                Npgsql.Schema.NpgsqlDbColumn columns;
+                List<PeopleAddressEntity> queryResult = new List<PeopleAddressEntity>();
+                if (sqlQuery.ToLower().Contains("select"))
+                {
+                    try
+                    {
+                        queryResult = await people.SelectFromPeopleTable(NConString, sqlQuery);
+                        processAQuery = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("There may be an error with your SQL Query");
+                        Console.WriteLine("The error reads: " + ex.Message);
+                    }
+                }
             }
-
             List<PeopleEntity> fakePeople = new List<PeopleEntity>()
             {
             new PeopleEntity()
@@ -66,7 +77,7 @@ namespace RemoteSqlTool
                 var fn = peopleRecord.Firstname.PadRight(10).PadLeft(2) + "|";
                 var ln = peopleRecord.Lastname.PadRight(10).PadLeft(2) + "|";
                 var em = peopleRecord.Email.PadRight(25).PadLeft(2) + "|";
-                var cd = peopleRecord.CreatedDate.ToString().PadRight(5).PadLeft(2);
+                var cd = peopleRecord.AddressCreatedDate.ToString().PadRight(5).PadLeft(2);
                 Console.WriteLine(id + fn + ln + em + cd);
             }
             //StringBuilder sb = new StringBuilder();

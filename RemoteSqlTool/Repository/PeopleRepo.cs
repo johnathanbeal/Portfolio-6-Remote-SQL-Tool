@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using Npgsql.Schema;
 using RemoteSqlTool.Entities;
+using RemoteSqlTool.Indexer;
 
 namespace RemoteSqlTool.Repository
 {
@@ -40,7 +41,7 @@ namespace RemoteSqlTool.Repository
                     {
                         while (await reader.ReadAsync())
                         {
-                            Util.assignReaderValueToPropertyByNpgsqlDbColumn(reader);
+                            PeopleAddressIndexer PeopleAddressIndexer = Util.assignReaderValueToPropertyByNpgsqlDbColumn(reader);
 
                             
                                 Console.WriteLine(reader.FieldCount);
@@ -53,12 +54,17 @@ namespace RemoteSqlTool.Repository
                                 //var debug = reader[0];
                                 personWithAddress.Add(new PeopleAddressEntity()
                                 {
-                                    
-                                    Firstname = reader[0].ToString(),
-                                    Lastname = reader[1].ToString(),
-                                    Email = reader[2].ToString(),
-                                    //CreatedDate = DateTime.Parse(reader[3].ToString()),
-                                    Id = Int32.Parse(reader[4].ToString())
+                                    Id = Int32.Parse(reader[PeopleAddressIndexer.Id].ToString()),
+                                    Firstname = reader[PeopleAddressIndexer.Firstname].ToString(),
+                                    Lastname = reader[PeopleAddressIndexer.Lastname].ToString(),
+                                    Email = reader[PeopleAddressIndexer.Email].ToString(),
+                                    PeopleCreatedOn = DateTime.Parse(reader[PeopleAddressIndexer.CreatedOn].ToString()),
+                                    AddressId = Int32.Parse(reader[PeopleAddressIndexer.AddressId].ToString()),
+                                    PersonId = Int32.Parse(reader[PeopleAddressIndexer.PersonId].ToString()),
+                                    City = reader[PeopleAddressIndexer.City].ToString(),
+                                    State = reader[PeopleAddressIndexer.State].ToString(),
+                                    Zip = reader[PeopleAddressIndexer.Zip].ToString(),
+                                    AddressCreatedDate = reader[PeopleAddressIndexer.CreatedDate].ToString()
                                 });
                             }
                             catch(Exception ex)
