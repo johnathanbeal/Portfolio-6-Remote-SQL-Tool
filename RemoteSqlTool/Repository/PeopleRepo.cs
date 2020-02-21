@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,14 @@ namespace RemoteSqlTool.Repository
 {
     public class PeopleRepo
     {
-        public async Task<List<PeopleAddressEntity>> SelectFromPeopleTable(string connString, string _sqlQuery)
+        public async Task<Tuple<ListDictionary, ListDictionary>>SelectFromPeopleTable(string connString, string _sqlQuery)
         {
             List<PeopleAddressEntity> personWithAddress = new List<PeopleAddressEntity>();
+            
 
+            ListDictionary listOfRecordsByColumn = new ListDictionary();
+            ListDictionary listOfRecordsByIndex = new ListDictionary();
+            
             await using NpgsqlConnection conn = new NpgsqlConnection(connString);
 
             try
@@ -31,41 +36,27 @@ namespace RemoteSqlTool.Repository
             {
                 cmd.Connection = conn;
 
-                int headCount = 0;
-                
-                var format = "ddd MMM dd yyyy HH:mm:ss 'GMT'zzz '(GMT Daylight Time)'";
-
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {                    
                     try
                     {
+                        int index = 0;
                         while (await reader.ReadAsync())
                         {
-                            PeopleAddressIndexer PeopleAddressIndexer = Util.assignReaderValueToPropertyByNpgsqlDbColumn(reader);
+                            ListDictionary listOfColumnsAndValuesPerRecord = new ListDictionary();
+                            ListDictionary listOfIndexesAndValuesPerRecord = new ListDictionary();
+                            var ColumnSchema = reader.GetColumnSchema();
 
-                            
-                                Console.WriteLine(reader.FieldCount);
-                                //Console.WriteLine(reader.VisibleFieldCount);
-                                //Console.WriteLine(columnValue.ToString());
-                                var sqlStatement = reader.Statements;
-                                
                             try
                             {
-                                //var debug = reader[0];
-                                personWithAddress.Add(new PeopleAddressEntity()
+                                for (int i = 0; i < reader.FieldCount; i++)
                                 {
-                                    Id = Int32.Parse(reader[PeopleAddressIndexer.Id].ToString()),
-                                    Firstname = reader[PeopleAddressIndexer.Firstname].ToString(),
-                                    Lastname = reader[PeopleAddressIndexer.Lastname].ToString(),
-                                    Email = reader[PeopleAddressIndexer.Email].ToString(),
-                                    PeopleCreatedOn = DateTime.Parse(reader[PeopleAddressIndexer.CreatedOn].ToString()),
-                                    AddressId = Int32.Parse(reader[PeopleAddressIndexer.AddressId].ToString()),
-                                    PersonId = Int32.Parse(reader[PeopleAddressIndexer.PersonId].ToString()),
-                                    City = reader[PeopleAddressIndexer.City].ToString(),
-                                    State = reader[PeopleAddressIndexer.State].ToString(),
-                                    Zip = reader[PeopleAddressIndexer.Zip].ToString(),
-                                    AddressCreatedDate = reader[PeopleAddressIndexer.CreatedDate].ToString()
-                                });
+                                    
+                                    listOfColumnsAndValuesPerRecord.Add(ColumnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
+                                    listOfIndexesAndValuesPerRecord.Add(ColumnSchema[i].ColumnOrdinal, reader[i].ToString());
+                                }
+                                listOfRecordsByColumn.Add(index, listOfColumnsAndValuesPerRecord);
+                                listOfRecordsByIndex.Add(index, listOfIndexesAndValuesPerRecord);
                             }
                             catch(Exception ex)
                             {
@@ -73,7 +64,7 @@ namespace RemoteSqlTool.Repository
                                 
                                 
                             }
-                            
+                            index++;
                         }
                     }
                     catch(Exception x)
@@ -82,7 +73,9 @@ namespace RemoteSqlTool.Repository
                     }
                     await cmd.DisposeAsync();
                 }
-                return personWithAddress;
+                var results = new Tuple<ListDictionary, ListDictionary>(listOfRecordsByColumn, listOfRecordsByIndex);
+
+                return results;
             }
         }
 

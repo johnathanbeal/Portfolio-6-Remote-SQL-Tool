@@ -33,17 +33,17 @@ namespace RemoteSqlTool
             PeopleAddressIndexer PeopleAddressIndexer = new PeopleAddressIndexer();
             var ColumnSchema = _reamde.GetColumnSchema();
 
-            PeopleAddressIndexer.Id = -1;
-            PeopleAddressIndexer.Firstname = -1;
-            PeopleAddressIndexer.Lastname = -1;
-            PeopleAddressIndexer.Email = -1;
-            PeopleAddressIndexer.CreatedOn = -1;
-            PeopleAddressIndexer.AddressId = -1;
-            PeopleAddressIndexer.PersonId = -1;
-            PeopleAddressIndexer.City = -1;
-            PeopleAddressIndexer.State = -1;
-            PeopleAddressIndexer.Zip = -1;
-            PeopleAddressIndexer.CreatedDate = -1;
+            //PeopleAddressIndexer.Id = -1;
+            //PeopleAddressIndexer.Firstname = -1;
+            //PeopleAddressIndexer.Lastname = -1;
+            //PeopleAddressIndexer.Email = -1;
+            //PeopleAddressIndexer.CreatedOn = -1;
+            //PeopleAddressIndexer.AddressId = -1;
+            //PeopleAddressIndexer.PersonId = -1;
+            //PeopleAddressIndexer.City = -1;
+            //PeopleAddressIndexer.State = -1;
+            //PeopleAddressIndexer.Zip = -1;
+            //PeopleAddressIndexer.CreatedDate = -1;
 
             for (int i = 0; i < _reamde.FieldCount; i++)
             {
