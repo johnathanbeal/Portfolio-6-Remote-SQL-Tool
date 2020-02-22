@@ -107,15 +107,30 @@ namespace RemoteSqlTool
             
             Console.WriteLine("The number of records is :" + queryResult.Count);
             var QueryResultStringBuilder = new StringBuilder();
-            foreach (var queryColumn in queryResult.Keys)
+            try
             {
-                Console.Write(queryColumn.ToString());
-                QueryResultStringBuilder.Append(queryColumn.ToString().PadRight(Util.PadSpace(queryColumn.ToString())).PadLeft(2) + "|");
+                foreach (Dictionary<string, string> rowOfColumns in queryResult)
+                {
+                    try
+                    {
+                        foreach (string column in rowOfColumns.Keys)
+                        {
+                            QueryResultStringBuilder.Append(column.ToString().PadRight(Util.PadSpace(column.ToString())).PadLeft(2) + "|");
+                        }
+                        foreach (Dictionary<string, string> record in queryResult.Values)
+                        {
+                            QueryResultStringBuilder.Append(record.ToString().PadRight(Util.PadSpace(record.ToString())).PadLeft(2) + "|");
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
             }
-            foreach (ListDictionary queryValue in queryResult.Values)
+            catch(Exception e)
             {
-                Console.Write(queryValue.ToString());
-                QueryResultStringBuilder.Append(queryValue.ToString().PadRight(Util.PadSpace(queryValue.ToString())).PadLeft(2) + "|");
+                Console.WriteLine(e);
             }
             Console.WriteLine(QueryResultStringBuilder);
         }
