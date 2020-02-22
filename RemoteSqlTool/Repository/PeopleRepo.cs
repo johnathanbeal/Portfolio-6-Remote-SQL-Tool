@@ -13,13 +13,12 @@ namespace RemoteSqlTool.Repository
 {
     public class PeopleRepo
     {
-        public async Task<Tuple<ListDictionary, ListDictionary>>SelectFromPeopleTable(string connString, string _sqlQuery)
+        public async Task<ListDictionary> SelectFromPeopleTable(string connString, string _sqlQuery)
         {
             List<PeopleAddressEntity> personWithAddress = new List<PeopleAddressEntity>();
             
 
-            ListDictionary listOfRecordsByColumn = new ListDictionary();
-            ListDictionary listOfRecordsByIndex = new ListDictionary();
+            ListDictionary rowsOfRecords = new ListDictionary();
             
             await using NpgsqlConnection conn = new NpgsqlConnection(connString);
 
@@ -43,8 +42,7 @@ namespace RemoteSqlTool.Repository
                         int index = 0;
                         while (await reader.ReadAsync())
                         {
-                            ListDictionary listOfColumnsAndValuesPerRecord = new ListDictionary();
-                            ListDictionary listOfIndexesAndValuesPerRecord = new ListDictionary();
+                            Dictionary<string, string> row = new Dictionary<string, string>();
                             var ColumnSchema = reader.GetColumnSchema();
 
                             try
@@ -52,11 +50,9 @@ namespace RemoteSqlTool.Repository
                                 for (int i = 0; i < reader.FieldCount; i++)
                                 {
                                     
-                                    listOfColumnsAndValuesPerRecord.Add(ColumnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
-                                    listOfIndexesAndValuesPerRecord.Add(ColumnSchema[i].ColumnOrdinal, reader[i].ToString());
+                                    row.Add(ColumnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
                                 }
-                                listOfRecordsByColumn.Add(index, listOfColumnsAndValuesPerRecord);
-                                listOfRecordsByIndex.Add(index, listOfIndexesAndValuesPerRecord);
+                                rowsOfRecords.Add(index, row);
                             }
                             catch(Exception ex)
                             {
@@ -73,9 +69,8 @@ namespace RemoteSqlTool.Repository
                     }
                     await cmd.DisposeAsync();
                 }
-                var results = new Tuple<ListDictionary, ListDictionary>(listOfRecordsByColumn, listOfRecordsByIndex);
 
-                return results;
+                return rowsOfRecords;
             }
         }
 

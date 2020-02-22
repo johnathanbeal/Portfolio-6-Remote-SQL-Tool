@@ -23,7 +23,7 @@ namespace RemoteSqlTool
 
             NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);///Commented out temporarily
             var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
-            Tuple<ListDictionary, ListDictionary> queryResult = new Tuple<ListDictionary, ListDictionary>(new ListDictionary(), new ListDictionary());
+            ListDictionary queryResult = new ListDictionary();
             PeopleRepo people = new PeopleRepo();
 
 
@@ -104,16 +104,15 @@ namespace RemoteSqlTool
             //    Console.WriteLine(printRecord);
 
             //}
-            var listOfRecordsByColumn = queryResult.Item1;
-            var listOfRecordsByIndex = queryResult.Item2;
-            Console.WriteLine(listOfRecordsByColumn.Count);
+            
+            Console.WriteLine("The number of records is :" + queryResult.Count);
             var QueryResultStringBuilder = new StringBuilder();
-            foreach (var queryColumn in listOfRecordsByColumn.Keys)
+            foreach (var queryColumn in queryResult.Keys)
             {
                 Console.Write(queryColumn.ToString());
                 QueryResultStringBuilder.Append(queryColumn.ToString().PadRight(Util.PadSpace(queryColumn.ToString())).PadLeft(2) + "|");
             }
-            foreach (ListDictionary queryValue in listOfRecordsByColumn.Values)
+            foreach (ListDictionary queryValue in queryResult.Values)
             {
                 Console.Write(queryValue.ToString());
                 QueryResultStringBuilder.Append(queryValue.ToString().PadRight(Util.PadSpace(queryValue.ToString())).PadLeft(2) + "|");
