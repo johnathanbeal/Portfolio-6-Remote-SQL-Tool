@@ -23,7 +23,7 @@ namespace RemoteSqlTool
 
             NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);///Commented out temporarily
             var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
-            Tuple<ListDictionary, ListDictionary> queryResult;
+            Tuple<ListDictionary, ListDictionary> queryResult = new Tuple<ListDictionary, ListDictionary>(new ListDictionary(), new ListDictionary());
             PeopleRepo people = new PeopleRepo();
 
 
@@ -47,31 +47,31 @@ namespace RemoteSqlTool
                     }
                 }
             }
-            List<PeopleEntity> fakePeople = new List<PeopleEntity>()
-            {
-            new PeopleEntity()
-            {
-                Id = 1,
-                Firstname = "Johnathan",
-                Lastname = "Locke",
-                Email = "johnathan.locke@protonmail.com",
-                CreatedDate = DateTime.Now
-            },
-            new PeopleEntity()
-            {
-                Id = 2,
-                Firstname = "Christopher",
-                Lastname = "Locke",
-                Email = "christopher.locke@protonmail.com",
-                CreatedDate = DateTime.Now
-            }
+            //List<PeopleEntity> fakePeople = new List<PeopleEntity>()
+            //{
+            //new PeopleEntity()
+            //{
+            //    Id = 1,
+            //    Firstname = "Johnathan",
+            //    Lastname = "Locke",
+            //    Email = "johnathan.locke@protonmail.com",
+            //    CreatedDate = DateTime.Now
+            //},
+            //new PeopleEntity()
+            //{
+            //    Id = 2,
+            //    Firstname = "Christopher",
+            //    Lastname = "Locke",
+            //    Email = "christopher.locke@protonmail.com",
+            //    CreatedDate = DateTime.Now
+            //}
 
-            };
+            //};
 
-            people.InsertIntoAwsRdsInstance();///Commented out temporarily
-            
+            //people.InsertIntoAwsRdsInstance();///Commented out temporarily
 
-            
+
+
 
             //foreach (var peopleRecord in queryResult)///Temporarily commented out
             //{
@@ -85,25 +85,40 @@ namespace RemoteSqlTool
             //}
             //StringBuilder sb = new StringBuilder();
 
-            PropertyInfo[] properties = fakePeople[0].GetType().GetProperties();
-            
-            var PropStringBuilder = new StringBuilder();
-            foreach (PropertyInfo prop in properties)
+            //PropertyInfo[] properties = fakePeople[0].GetType().GetProperties();
+
+            //var PropStringBuilder = new StringBuilder();
+            //foreach (PropertyInfo prop in properties)
+            //{
+            //    PropStringBuilder.Append(prop.Name.PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
+            //}
+            //Console.WriteLine(PropStringBuilder);
+            //foreach (var peopleRecord in fakePeople)
+            //{
+            //    PropertyInfo[] props = peopleRecord.GetType().GetProperties();
+            //    var printRecord = new StringBuilder();
+            //    foreach(PropertyInfo prop in props)
+            //    {
+            //        printRecord.Append(prop.GetValue(peopleRecord, null).ToString().PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
+            //    }
+            //    Console.WriteLine(printRecord);
+
+            //}
+            var listOfRecordsByColumn = queryResult.Item1;
+            var listOfRecordsByIndex = queryResult.Item2;
+            Console.WriteLine(listOfRecordsByColumn.Count);
+            var QueryResultStringBuilder = new StringBuilder();
+            foreach (var queryColumn in listOfRecordsByColumn.Keys)
             {
-                PropStringBuilder.Append(prop.Name.PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
+                Console.Write(queryColumn.ToString());
+                QueryResultStringBuilder.Append(queryColumn.ToString().PadRight(Util.PadSpace(queryColumn.ToString())).PadLeft(2) + "|");
             }
-            Console.WriteLine(PropStringBuilder);
-            foreach (var peopleRecord in fakePeople)
+            foreach (ListDictionary queryValue in listOfRecordsByColumn.Values)
             {
-                PropertyInfo[] props = peopleRecord.GetType().GetProperties();
-                var printRecord = new StringBuilder();
-                foreach(PropertyInfo prop in props)
-                {
-                    printRecord.Append(prop.GetValue(peopleRecord, null).ToString().PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
-                }
-                Console.WriteLine(printRecord);
-                
+                Console.Write(queryValue.ToString());
+                QueryResultStringBuilder.Append(queryValue.ToString().PadRight(Util.PadSpace(queryValue.ToString())).PadLeft(2) + "|");
             }
+            Console.WriteLine(QueryResultStringBuilder);
         }
     }
 }
