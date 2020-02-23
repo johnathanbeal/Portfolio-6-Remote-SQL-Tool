@@ -15,14 +15,58 @@ namespace RemoteSqlTool
             switch (_propertyName.ToLower())
             {
                 case "Id":
+                case "id":
+                case "aid":
+                case "pid":
                     return 3;
                 case "firstname":
                 case "lastname":
-                    return 20;
+                    return 10;
                 case "email":
-                    return 35;
-                case "createddate":
                     return 25;
+                case "address":
+                    return 28;
+                case "city":
+                    return 8;
+                case "state":
+                    return 7;
+                case "zip":
+                    return 6;
+                case "created_on":
+                    return 12;
+                case "createddate":
+                    return 12;
+                default:
+                    return 10;
+            }
+        }
+
+        public static int TruncateValue(string _propertyName)
+        {
+            switch (_propertyName.ToLower())
+            {
+                case "Id":
+                case "id":
+                case "aid":
+                case "pid":
+                    return 3;
+                case "firstname":
+                case "lastname":
+                    return 10;
+                case "email":
+                    return 25;
+                case "address":
+                    return 28;
+                case "city":
+                    return 8;
+                case "state":
+                    return 7;
+                case "zip":
+                    return 6;
+                case "created_on":
+                    return 12;
+                case "created_date":
+                    return 12;
                 default:
                     return 10;
             }

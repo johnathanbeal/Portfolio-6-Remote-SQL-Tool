@@ -10,6 +10,8 @@ using System.Reflection;
 using System.Text;
 using RemoteSqlTool.Entities;
 using System.Collections.Specialized;
+using System.Collections;
+using System.Linq;
 
 namespace RemoteSqlTool
 {
@@ -23,9 +25,8 @@ namespace RemoteSqlTool
 
             NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);///Commented out temporarily
             var NConString = NConn.connString(NConn.authProps);///Commented out temporarily
-            ListDictionary queryResult = new ListDictionary();
+            List<ListDictionary> queryResult = new List<ListDictionary>();
             PeopleRepo people = new PeopleRepo();
-
 
             var processAQuery = true;
             while (processAQuery)
@@ -47,92 +48,47 @@ namespace RemoteSqlTool
                     }
                 }
             }
-            //List<PeopleEntity> fakePeople = new List<PeopleEntity>()
-            //{
-            //new PeopleEntity()
-            //{
-            //    Id = 1,
-            //    Firstname = "Johnathan",
-            //    Lastname = "Locke",
-            //    Email = "johnathan.locke@protonmail.com",
-            //    CreatedDate = DateTime.Now
-            //},
-            //new PeopleEntity()
-            //{
-            //    Id = 2,
-            //    Firstname = "Christopher",
-            //    Lastname = "Locke",
-            //    Email = "christopher.locke@protonmail.com",
-            //    CreatedDate = DateTime.Now
-            //}
-
-            //};
-
+            
             //people.InsertIntoAwsRdsInstance();///Commented out temporarily
 
-
-
-
-            //foreach (var peopleRecord in queryResult)///Temporarily commented out
-            //{
-            //    //Console.WriteLine(peopleRecord.GetType());
-            //    var id = peopleRecord.Id.ToString().PadRight(3).PadLeft(2) + "|";
-            //    var fn = peopleRecord.Firstname.PadRight(10).PadLeft(2) + "|";
-            //    var ln = peopleRecord.Lastname.PadRight(10).PadLeft(2) + "|";
-            //    var em = peopleRecord.Email.PadRight(25).PadLeft(2) + "|";
-            //    var cd = peopleRecord.AddressCreatedDate.ToString().PadRight(5).PadLeft(2);
-            //    Console.WriteLine(id + fn + ln + em + cd);
-            //}
-            //StringBuilder sb = new StringBuilder();
-
-            //PropertyInfo[] properties = fakePeople[0].GetType().GetProperties();
-
-            //var PropStringBuilder = new StringBuilder();
-            //foreach (PropertyInfo prop in properties)
-            //{
-            //    PropStringBuilder.Append(prop.Name.PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
-            //}
-            //Console.WriteLine(PropStringBuilder);
-            //foreach (var peopleRecord in fakePeople)
-            //{
-            //    PropertyInfo[] props = peopleRecord.GetType().GetProperties();
-            //    var printRecord = new StringBuilder();
-            //    foreach(PropertyInfo prop in props)
-            //    {
-            //        printRecord.Append(prop.GetValue(peopleRecord, null).ToString().PadRight(Util.PadSpace(prop.Name)).PadLeft(2) + "|");
-            //    }
-            //    Console.WriteLine(printRecord);
-
-            //}
-            
             Console.WriteLine("The number of records is :" + queryResult.Count);
-            var QueryResultStringBuilder = new StringBuilder();
-            try
+            var headerRowStringBuilder = new StringBuilder();
+            var rowsOfRecordsStringBuilder = new StringBuilder();
+            //var debugStringBuilder = new StringBuilder();
+
+            var firstDictionary = queryResult[0];
+          
+            //GroupBy(de => de.Keys).Select(columnName => columnName.First()).ToList();
+            foreach (var columnName in firstDictionary.Keys)
             {
-                foreach (Dictionary<string, string> rowOfColumns in queryResult)
+                
+                    headerRowStringBuilder.Append(columnName.ToString().ToUpper().PadRight(Util.PadSpace(columnName.ToString())).PadLeft(2) + "|");               
+            }
+            Console.WriteLine(headerRowStringBuilder);
+
+            foreach (var row in queryResult)
                 {
-                    try
+                var debugStringBuilder = new StringBuilder();
+                    foreach (DictionaryEntry column in row)
                     {
-                        foreach (string column in rowOfColumns.Keys)
-                        {
-                            QueryResultStringBuilder.Append(column.ToString().PadRight(Util.PadSpace(column.ToString())).PadLeft(2) + "|");
-                        }
-                        foreach (Dictionary<string, string> record in queryResult.Values)
-                        {
-                            QueryResultStringBuilder.Append(record.ToString().PadRight(Util.PadSpace(record.ToString())).PadLeft(2) + "|");
-                        }
-                    }
-                    catch(Exception e)
+                    int index;
+                    int length = column.Value.ToString().Length;
+                    if (Util.TruncateValue(column.Key.ToString()) > column.Value.ToString().Length)
                     {
-                        Console.WriteLine(e);
+                        index = length;
                     }
+                    else
+                    {
+                        index = Util.TruncateValue(column.Key.ToString());
+                    }
+                    var val = column.Value.ToString();
+                    var ki = column.Key.ToString();
+                        val = val.Substring(0, index);
+                        debugStringBuilder.Append(val.PadRight(Util.PadSpace(ki)).PadLeft(2) + "|");
+                    }
+                Console.WriteLine(debugStringBuilder);
                 }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            Console.WriteLine(QueryResultStringBuilder);
+            //Console.WriteLine(rowsOfRecordsStringBuilder);
         }
     }
 }

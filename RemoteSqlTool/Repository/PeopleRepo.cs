@@ -13,64 +13,37 @@ namespace RemoteSqlTool.Repository
 {
     public class PeopleRepo
     {
-        public async Task<ListDictionary> SelectFromPeopleTable(string connString, string _sqlQuery)
+        public async Task<List<ListDictionary>> SelectFromPeopleTable(string connString, string _sqlQuery)
         {
-            List<PeopleAddressEntity> personWithAddress = new List<PeopleAddressEntity>();
-            
-
-            ListDictionary rowsOfRecords = new ListDictionary();
-            
+                        
             await using NpgsqlConnection conn = new NpgsqlConnection(connString);
 
-            try
-            {
-                await conn.OpenAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
+            await conn.OpenAsync();
+                       
             await using (var cmd = new NpgsqlCommand(_sqlQuery))
             {
                 cmd.Connection = conn;
+                var rows = new List<ListDictionary>();
 
                 await using (var reader = await cmd.ExecuteReaderAsync())
-                {                    
-                    try
-                    {
-                        int index = 0;
+                {                                      
+
                         while (await reader.ReadAsync())
                         {
-                            Dictionary<string, string> row = new Dictionary<string, string>();
-                            var ColumnSchema = reader.GetColumnSchema();
+                            var row = new ListDictionary();
+                            var columnSchema = reader.GetColumnSchema();
 
-                            try
-                            {
                                 for (int i = 0; i < reader.FieldCount; i++)
-                                {
-                                    
-                                    row.Add(ColumnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
+                                {                         
+                                    row.Add(columnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
                                 }
-                                rowsOfRecords.Add(index, row);
-                            }
-                            catch(Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                                
-                                
-                            }
-                            index++;
+                                rows.Add(row);
                         }
-                    }
-                    catch(Exception x)
-                    {
-                        Console.WriteLine("Something went wrong at or after the call to ExecuteReaderAsync():" + x.Message);
-                    }
+                    
                     await cmd.DisposeAsync();
                 }
 
-                return rowsOfRecords;
+                return rows;
             }
         }
 
