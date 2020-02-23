@@ -64,10 +64,11 @@ namespace RemoteSqlTool.Repository
                 using (var cmd = new NpgsqlCommand(_sqlQuery, conn))
                 {
                     cmd.Connection = conn;
-
-                    var table = _sqlQuery.ToLower().Between("insert into", " (");//doesn't work
-                    var columnsString = _sqlQuery.ToLower().Between(table + " (", ") values");//doesn't work
+                    var part1 = _sqlQuery.ToLower().Between("insert into ", " values");
                     var valuesString = _sqlQuery.ToLower().Between("values (", ")");//i think this works
+
+                    var table = part1.ToLower().Between("", " (");
+                    var columnsString = _part1.ToLower().Between(table + " (", ")");//doesn't work
 
                     var _sqlQueryWithoutInsertIntoText = _sqlQuery.Replace("insert into", "").Trim();
                     var _sqlQueryWithoutValuesText = _sqlQueryWithoutInsertIntoText.Replace("values", "").Trim();
