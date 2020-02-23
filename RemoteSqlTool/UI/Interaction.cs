@@ -16,6 +16,7 @@ namespace RemoteSqlTool.UI
             {
                 Console.WriteLine("Enter " + ac);
                 inputs.Add(Console.ReadLine());
+                Console.WriteLine();
             }
             if (inputs[0] != "")
             {

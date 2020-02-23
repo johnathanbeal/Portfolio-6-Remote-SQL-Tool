@@ -21,15 +21,15 @@ namespace RemoteSqlTool
                     return 3;
                 case "firstname":
                 case "lastname":
-                    return 10;
+                    return 14;
                 case "email":
-                    return 25;
-                case "address":
                     return 28;
+                case "address":
+                    return 31;
                 case "city":
-                    return 8;
+                    return 13;
                 case "state":
-                    return 7;
+                    return 5;
                 case "zip":
                     return 6;
                 case "created_on":
@@ -52,15 +52,15 @@ namespace RemoteSqlTool
                     return 3;
                 case "firstname":
                 case "lastname":
-                    return 10;
+                    return 14;
                 case "email":
-                    return 25;
-                case "address":
                     return 28;
+                case "address":
+                    return 31;
                 case "city":
-                    return 8;
+                    return 13;
                 case "state":
-                    return 7;
+                    return 5;
                 case "zip":
                     return 6;
                 case "created_on":
