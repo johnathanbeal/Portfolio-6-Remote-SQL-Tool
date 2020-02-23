@@ -27,7 +27,9 @@ namespace RemoteSqlTool
             var NConString = NConn.connString(NConn.authProps);
 
             List<ListDictionary> queryResult = new List<ListDictionary>();
-            RoloRepo people = new RoloRepo();
+            SelectRepo select = new SelectRepo();
+            InsertRepo insert = new InsertRepo();
+            DeleteRepo delete = new DeleteRepo();
 
             var processAQuery = true;
             while (processAQuery)
@@ -40,14 +42,32 @@ namespace RemoteSqlTool
                 {
                     if (sqlQuery.ToLower().Contains("select"))
                     {                        
-                            queryResult = await people.SelectFromRolodex(NConString, sqlQuery);
+                            queryResult = await select.SelectFromRolodex(NConString, sqlQuery);
                             DisplayResults display = new DisplayResults();
                             display.WriteSelectResultsToConsole(queryResult);
-                            processAQuery = false;                      
                     }
                     else if (sqlQuery.ToLower().Contains("insert"))
-                    {                       
-                            people.InsertIntoRolodex(sqlQuery);                       
+                    {
+                            if (sqlQuery.ToLower().Contains("join"))
+                            {
+                                Console.WriteLine("All Apologies, but this program will have a difficult time processing JOIN statements");
+                            }
+                            insert.InsertIntoRolodex(NConString, sqlQuery);
+                        Console.WriteLine("Your insert statement was processes");
+                    }
+                    else if (sqlQuery.ToLower().Contains("delete"))
+                    {
+                        delete.deleteRecord(NConString, sqlQuery);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Press q to quit");
+                        var userCloseInput = Console.ReadLine();
+                        if (userCloseInput.ToLower().Contains("q"))
+                        {
+                            processAQuery = false;
+                            Console.WriteLine("Closing Time...");
+                        }
                     }
                 }
                 catch (Exception ex)

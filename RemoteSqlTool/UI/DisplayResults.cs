@@ -50,6 +50,7 @@ namespace RemoteSqlTool.UI
                     debugStringBuilder.Append(val.PadRight(Util.PadSpace(ki)).PadLeft(2) + "|");
                 }
                 Console.WriteLine(debugStringBuilder);
+                Console.WriteLine(System.Environment.NewLine);
             }
         }
     }
