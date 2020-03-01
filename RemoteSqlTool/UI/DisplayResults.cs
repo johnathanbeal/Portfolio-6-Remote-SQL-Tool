@@ -3,17 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RemoteSqlTool.UI
 {
-    public class DisplayResults
+    public static class DisplayResults
     {
-        public void WriteSelectResultsToConsole(List<ListDictionary> _queryResult)
+        public static void WriteSelectResultsToConsole(List<ListDictionary> _queryResult)
         {
             Console.WriteLine("The number of records is :" + _queryResult.Count + System.Environment.NewLine);
             var headerRowStringBuilder = new StringBuilder();
-            var rowsOfRecordsStringBuilder = new StringBuilder();
-            //var debugStringBuilder = new StringBuilder();
 
             var firstDictionary = _queryResult[0];
             var columnCount = firstDictionary.Keys.Count;
@@ -21,10 +20,9 @@ namespace RemoteSqlTool.UI
             {
                 Console.WriteLine("Maximize console window to see results more clearly" + System.Environment.NewLine);
             }
-            //GroupBy(de => de.Keys).Select(columnName => columnName.First()).ToList();
+
             foreach (var columnName in firstDictionary.Keys)
             {
-
                 headerRowStringBuilder.Append(columnName.ToString().ToUpper().PadRight(Util.PadSpace(columnName.ToString())).PadLeft(2) + "|");
             }
             Console.WriteLine(headerRowStringBuilder);
@@ -50,8 +48,8 @@ namespace RemoteSqlTool.UI
                     debugStringBuilder.Append(val.PadRight(Util.PadSpace(ki)).PadLeft(2) + "|");
                 }
                 Console.WriteLine(debugStringBuilder);
-                Console.WriteLine(System.Environment.NewLine);
             }
+            Console.WriteLine(System.Environment.NewLine);
         }
     }
 }

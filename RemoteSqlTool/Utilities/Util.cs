@@ -109,21 +109,8 @@ namespace RemoteSqlTool
             PeopleAddressIndexer PeopleAddressIndexer = new PeopleAddressIndexer();
             var ColumnSchema = _reamde.GetColumnSchema();
 
-            //PeopleAddressIndexer.Id = -1;
-            //PeopleAddressIndexer.Firstname = -1;
-            //PeopleAddressIndexer.Lastname = -1;
-            //PeopleAddressIndexer.Email = -1;
-            //PeopleAddressIndexer.CreatedOn = -1;
-            //PeopleAddressIndexer.AddressId = -1;
-            //PeopleAddressIndexer.PersonId = -1;
-            //PeopleAddressIndexer.City = -1;
-            //PeopleAddressIndexer.State = -1;
-            //PeopleAddressIndexer.Zip = -1;
-            //PeopleAddressIndexer.CreatedDate = -1;
-
             for (int i = 0; i < _reamde.FieldCount; i++)
             {
-                //peopleDictionary[i] = ColumnSchema[i].ColumnName.ToString();
                 Console.WriteLine("Column Name is :" + ColumnSchema[i].ColumnName.ToString());
                 Console.WriteLine("Column Indexer is :" + ColumnSchema[i].ColumnOrdinal.ToString());
                 switch (ColumnSchema[i].ColumnName.ToString().ToLower())
@@ -167,6 +154,32 @@ namespace RemoteSqlTool
             return PeopleAddressIndexer;
         }
 
-       
-    }
+        public static IRepo GetRepoType(string _sqlQuery)
+        {
+            if (_sqlQuery.ToLower().Contains("select"))
+            {
+                IRepo repo = new SelectRepo();
+                return repo;
+            }
+            else if (_sqlQuery.ToLower().Contains("insert"))
+            {
+                IRepo repo = new InsertRepo();
+                return repo;
+            }
+            else if (_sqlQuery.ToLower().Contains("delete"))
+            {
+                IRepo repo = new DeleteRepo();
+                return repo;
+            }
+            else if (_sqlQuery.ToLower().Contains("update"))
+            {
+                IRepo repo = new UpdateRepo();
+                return repo;
+            }
+            else
+            {
+                return null;
+            }
+        }                              
+    }   
 }

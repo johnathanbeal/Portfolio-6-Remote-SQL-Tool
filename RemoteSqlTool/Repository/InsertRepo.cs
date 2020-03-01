@@ -1,55 +1,50 @@
 ﻿using Npgsql;
+using RemoteSqlTool.Utilities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RemoteSqlTool.Repository
 {
-    public class InsertRepo
+    public class InsertRepo : IRepo
     {
-        public void InsertIntoRolodex(string connString, string _sqlQuery)
+        public async Task<List<ListDictionary>> Command(string connString, string _sqlQuery)
         {
-            using NpgsqlConnection conn = new NpgsqlConnection(connString);
+            var insertDictionary = new List<ListDictionary>();
 
-            conn.Open();
-            
-            try
+            await using NpgsqlConnection conn = new NpgsqlConnection(connString);
+
+            await conn.OpenAsync();
+
+            await using (var cmd = new NpgsqlCommand(_sqlQuery, conn))
             {
-                using (var cmd = new NpgsqlCommand(_sqlQuery, conn))
+                cmd.Connection = conn;
+
+                var lld = ParseSQL.parseInsertSQLReturnColumnsAndValues(_sqlQuery);
+
+                foreach (var listDictionary in lld)
                 {
-                    cmd.Connection = conn;
-                    var part1 = _sqlQuery.ToLower().Between("insert into ", " values");
+                    ListDictionary localListDictionary = new ListDictionary();
 
-                    var table = part1.ToLower().Between("", " (");
-
-                    var valuesString = _sqlQuery.ToLower().Between("values (", ")");//i think this works
-
-                    var _columns = part1.ToLower().Between(table + " (", ")");//doesn't work
-                    if (_columns == "")
+                    foreach (DictionaryEntry entry in localListDictionary)
                     {
-                        Console.WriteLine("Please include columns in your insert statement");
+                        var value = TemporalUtility.ConvertCurrentTimestampStringToDateTimeNowString(entry.Value.ToString());
+
+                        cmd.Parameters.AddWithValue(value, entry.Key.ToString());
+
+                        localListDictionary.Add(entry.Key.ToString(), value);
                     }
-                    
-                    string[] columns = _columns.Replace(" ", "").Split(',');
-                    string[] values = valuesString.Replace(" ", "").Split(',');
-
-                    for (int i = 0; i < values.Length; i++)
-                    {
-                        if (values[i].ToLower() == "current_timestamp")
-                        {
-                            values[i] = DateTime.Now.ToString();
-                        }
-
-                        cmd.Parameters.AddWithValue(columns[i], values[i]);
-                    }
-
-                    cmd.ExecuteNonQuery();
+                    insertDictionary.Add(localListDictionary);
                 }
+
+                cmd.ExecuteNonQuery();
+                Console.WriteLine("Your insert statement was processed");
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("There was an error with your SQL Statement: " + e.Message);
-            }
+
+            return insertDictionary;
         }
     }
 }

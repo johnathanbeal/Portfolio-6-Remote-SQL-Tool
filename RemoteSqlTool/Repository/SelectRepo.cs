@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using RemoteSqlTool.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace RemoteSqlTool.Repository
 {
-    public class SelectRepo
+    public class SelectRepo : IRepo
     {
-        public async Task<List<ListDictionary>> SelectFromRolodex(string connString, string _sqlQuery)
+        public async Task<List<ListDictionary>> Command(string connString, string _sqlQuery)
         {
             await using NpgsqlConnection conn = new NpgsqlConnection(connString);
 
@@ -19,22 +20,32 @@ namespace RemoteSqlTool.Repository
             {
                 cmd.Connection = conn;
                 var rows = new List<ListDictionary>();
-
-                await using (var reader = await cmd.ExecuteReaderAsync())
+                try
                 {
-
-                    while (await reader.ReadAsync())
+                    await using (var reader = await cmd.ExecuteReaderAsync())
                     {
-                        var row = new ListDictionary();
-                        var columnSchema = reader.GetColumnSchema();
 
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        while (await reader.ReadAsync())
                         {
-                            row.Add(columnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
+                            var row = new ListDictionary();
+                            var columnSchema = reader.GetColumnSchema();
+
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                var debugKey = columnSchema[i].ColumnName.ToString().ToLower();
+
+                                var valueKey = reader[i].ToString();
+
+                                row.Add(columnSchema[i].ColumnName.ToString().ToLower(), reader[i].ToString());
+                            }
+                            rows.Add(row);
                         }
-                        rows.Add(row);
+                        await cmd.DisposeAsync();
                     }
-                    await cmd.DisposeAsync();
+                }
+                catch(Exception ex)
+                {
+                    ErrorMessages.MessageWhenSelectStatementHasAnException(ex);
                 }
                 return rows;
             }

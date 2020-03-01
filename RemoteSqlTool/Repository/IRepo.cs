@@ -11,10 +11,8 @@ using RemoteSqlTool.Indexer;
 
 namespace RemoteSqlTool.Repository
 {
-    public class RoloRepo
+    public interface IRepo
     {
-        
-
-        
+        Task<List<ListDictionary>> Command(string connString, string _sqlQuery);
     }
 }

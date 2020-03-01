@@ -1,21 +1,24 @@
 ﻿using Npgsql;
+using RemoteSqlTool.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RemoteSqlTool.Repository
 {
-    public class DeleteRepo
+    public class DeleteRepo : IRepo
     {
-        public void deleteRecord(string connectionString, string _sqlQuery)
+        public async Task<List<ListDictionary>> Command(string connectionString, string _sqlQuery)
         {
+            var deleteDictionary = new List<ListDictionary>();
             try
             {
-                using NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+                await using NpgsqlConnection conn = new NpgsqlConnection(connectionString);
                 conn.Open();
 
-                using (var cmd = new NpgsqlCommand(_sqlQuery))
+                await using (var cmd = new NpgsqlCommand(_sqlQuery))
                 {
                     cmd.Connection = conn;
 
@@ -26,19 +29,14 @@ namespace RemoteSqlTool.Repository
                         Console.WriteLine("Data successfully deleted");
                     }
                     
-
                     conn.Dispose();
                 }
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                if (ex.Message.Contains("update or delete on table") && ex.Message.Contains(" violates foreign key constraint"))
-                    {
-                        Console.WriteLine("Delete the related record in the address table before deleting from the people table");
-                    }
+                ErrorMessages.MessageWhenDeleteStatementHasForeignKeyContstraing(ex);
             }
-            
+            return deleteDictionary;
         }
     }
 }

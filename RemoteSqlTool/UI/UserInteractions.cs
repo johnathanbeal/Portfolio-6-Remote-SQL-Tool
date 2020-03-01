@@ -5,9 +5,9 @@ using System.Text;
 
 namespace RemoteSqlTool.UI
 {
-    public class Interaction
+    public static class UserInteractions
     {
-        public AttestationCharacteristics InitialUserPrompts()
+        public static AttestationCharacteristics InitialUserPrompts()
         {
             AttestationCharacteristics AC = new AttestationCharacteristics();
             List<string> inputs = new List<string>();
@@ -41,6 +41,12 @@ namespace RemoteSqlTool.UI
                 Console.WriteLine("http://www.enterthehatch.com/");
             }
             return AC;
+        }
+
+        public static string ProcessSqlInput()
+        {
+            Console.WriteLine("Enter a SQL Query or press q to quit" + System.Environment.NewLine);
+            return Console.ReadLine();
         }
 
 
