@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using NpgsqlTypes;
 using RemoteSqlTool.Indexer;
 using RemoteSqlTool.Repository;
 using System;
@@ -69,6 +70,37 @@ namespace RemoteSqlTool
                     return 12;
                 default:
                     return 10;
+            }
+        }
+
+        public static NpgsqlDbType GetTypeFromColumn(string _columnName)
+        {
+            switch (_columnName.ToLower())
+            {
+                case "Id":
+                case "id":
+                case "aid":
+                case "pid":
+                    return NpgsqlDbType.Integer;
+                case "firstname":
+                case "lastname":
+                    return NpgsqlDbType.Text;
+                case "email":
+                    return NpgsqlDbType.Text;
+                case "address":
+                    return NpgsqlDbType.Text;
+                case "city":
+                    return NpgsqlDbType.Text;
+                case "state":
+                    return NpgsqlDbType.Text;
+                case "zip":
+                    return NpgsqlDbType.Text;
+                case "created_on":
+                    return NpgsqlDbType.Date;
+                case "created_date":
+                    return NpgsqlDbType.Date;
+                default:
+                    return NpgsqlDbType.Varchar;
             }
         }
 

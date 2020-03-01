@@ -30,11 +30,12 @@ namespace RemoteSqlTool
             SelectRepo select = new SelectRepo();
             InsertRepo insert = new InsertRepo();
             DeleteRepo delete = new DeleteRepo();
+            UpdateRepo update = new UpdateRepo();
 
             var processAQuery = true;
             while (processAQuery)
             {
-                Console.WriteLine("Enter a SQL Query" + System.Environment.NewLine);
+                Console.WriteLine("Enter a SQL Query or press q to quit" + System.Environment.NewLine);
                 var sqlQuery = Console.ReadLine();
                 Console.WriteLine();
                 Npgsql.Schema.NpgsqlDbColumn columns;
@@ -50,7 +51,7 @@ namespace RemoteSqlTool
                     {
                             if (sqlQuery.ToLower().Contains("join"))
                             {
-                                Console.WriteLine("All Apologies, but this program will have a difficult time processing JOIN statements");
+                                Console.WriteLine("This program will have a difficult time processing JOIN statements");
                             }
                             insert.InsertIntoRolodex(NConString, sqlQuery);
                         Console.WriteLine("Your insert statement was processes");
@@ -59,11 +60,13 @@ namespace RemoteSqlTool
                     {
                         delete.deleteRecord(NConString, sqlQuery);
                     }
-                    else
+                    else if (sqlQuery.ToLower().Contains("update"))
                     {
-                        Console.WriteLine("Press q to quit");
-                        var userCloseInput = Console.ReadLine();
-                        if (userCloseInput.ToLower().Contains("q"))
+                        await update.UpdateRecord(NConString, sqlQuery);
+                    }
+                    else
+                    {                       
+                        if (sqlQuery.ToLower().Contains("q"))
                         {
                             processAQuery = false;
                             Console.WriteLine("Closing Time...");
@@ -74,6 +77,10 @@ namespace RemoteSqlTool
                 {
                     Console.WriteLine("There may be an error with your SQL Query");
                     Console.WriteLine("The error reads: " + ex.Message);
+                    if (ex.Message.Contains("does not exist") && ex.Message.Contains("The error reads") && ex.Message.Contains("column"))
+                    {
+                        Console.WriteLine("Try wrapping your update values in quotes");
+                    }
                     processAQuery = true;
                 }                
             }           

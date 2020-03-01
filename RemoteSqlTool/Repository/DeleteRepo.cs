@@ -19,7 +19,13 @@ namespace RemoteSqlTool.Repository
                 {
                     cmd.Connection = conn;
 
-                    cmd.ExecuteNonQuery();
+                    int recordAffected = cmd.ExecuteNonQuery();
+
+                    if (Convert.ToBoolean(recordAffected))
+                    {
+                        Console.WriteLine("Data successfully deleted");
+                    }
+                    
 
                     conn.Dispose();
                 }
@@ -27,6 +33,10 @@ namespace RemoteSqlTool.Repository
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                if (ex.Message.Contains("update or delete on table") && ex.Message.Contains(" violates foreign key constraint"))
+                    {
+                        Console.WriteLine("Delete the related record in the address table before deleting from the people table");
+                    }
             }
             
         }
