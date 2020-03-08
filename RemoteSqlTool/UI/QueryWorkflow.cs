@@ -11,8 +11,7 @@ namespace RemoteSqlTool.UI
 {
     public static class QueryWorkflow
     {
-        public static async Task<List<ListDictionary>> EnterQueryAndRun(string NConString, List<ListDictionary> queryResult, bool _keepRunning)
-        
+        public static async Task<List<ListDictionary>> EnterQueryAndRun(string NConString, List<ListDictionary> queryResult, bool _keepRunning)       
         {
 
             while (_keepRunning)
@@ -58,6 +57,12 @@ namespace RemoteSqlTool.UI
                 catch (Exception ex)
                 {
                     Console.WriteLine("There may be an error with your SQL Query." + System.Environment.NewLine + "The error reads: " + ex.Message);
+                    if (ex.Message.Contains("No such host is known") || ex.Message.Contains("Couldn't set port (Parameter 'port')"))
+                    {
+                        _keepRunning = false;
+                        var ConnString = UserInteractions.Startup();
+                        await EnterQueryAndRun(ConnString, queryResult, true);
+                    }
                 }
             }
             return queryResult;

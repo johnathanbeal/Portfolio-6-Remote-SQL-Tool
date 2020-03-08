@@ -23,11 +23,14 @@ namespace RemoteSqlTool.Connector
 
         public async Task<NpgsqlConnection> connString(string? _host, string? _username, string? _password, string? _database, int _port)
         {
-            var hookHost = _host ?? "rolodex2.cr4dat7cc46x.us-east-2.rds.amazonaws.com";  
+            var hookHost = _host ?? "blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";  // "rolodex.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";  
 
             var ConnString = "Server=" + hookHost + ";Username=" + _username + ";Password=" + _password + ";Database=" + _database + ";Port=" + _port;
             
-            var NpgConnString = new NpgsqlConnectionStringBuilder(ConnString);
+            var ConString = "Server = blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com; Port = 5432; Database = rolodex; User Id = postgres; Password = postgres";
+
+
+            var NpgConnString = new NpgsqlConnectionStringBuilder(ConString);
                 
             await using NpgsqlConnection conn = new NpgsqlConnection(NpgConnString.ConnectionString);
 
@@ -45,7 +48,7 @@ namespace RemoteSqlTool.Connector
 
         public string connString(AttestationCharacteristics ac)
         {
-            var hookHost = ac.Host ?? "rolodex2.cr4dat7cc46x.us-east-2.rds.amazonaws.com";
+            var hookHost = ac.Host ?? "blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";
 
             var ConnString = "Server=" + hookHost + ";Username=" + ac.Username + ";Password=" + ac.Password + ";Database=" + ac.Database + ";Port=" + ac.Port;
 

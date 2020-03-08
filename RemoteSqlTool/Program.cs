@@ -19,10 +19,12 @@ namespace RemoteSqlTool
     {
         static async Task Main(string[] args)
         {
-            AttestationCharacteristics databaseAuthorizationInputs = UserInteractions.InitialUserPrompts();
+            //AttestationCharacteristics databaseAuthorizationInputs = UserInteractions.InitialUserPrompts();
 
-            NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);
-            var NConString = NConn.connString(NConn.authProps);
+            //NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);
+            //var NConString = NConn.connString(NConn.authProps);
+
+            var NConString = UserInteractions.Startup();
 
             var results = await QueryWorkflow.EnterQueryAndRun(NConString, new List<ListDictionary>(), true);
         }

@@ -7,6 +7,13 @@ namespace RemoteSqlTool.UI
 {
     public static class UserInteractions
     {
+        public static string Startup()
+        {
+            var databaseAuthorizationInputs = InitialUserPrompts();
+            NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);
+            var NConString = NConn.connString(NConn.authProps);
+            return NConString;
+        }
         public static AttestationCharacteristics InitialUserPrompts()
         {
             AttestationCharacteristics AC = new AttestationCharacteristics();
