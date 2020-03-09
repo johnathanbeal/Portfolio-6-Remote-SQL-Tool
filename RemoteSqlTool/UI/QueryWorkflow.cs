@@ -29,6 +29,7 @@ namespace RemoteSqlTool.UI
                     if (sqlQuery.ToLower().Contains("select"))
                     {
                         queryResult = await repo.Command(NConString, sqlQuery);
+                        
                         DisplayResults.WriteSelectResultsToConsole(queryResult);
                     }
                     else if (sqlQuery.ToLower().Contains("insert"))
