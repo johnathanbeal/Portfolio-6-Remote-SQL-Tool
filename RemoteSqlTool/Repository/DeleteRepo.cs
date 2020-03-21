@@ -26,7 +26,17 @@ namespace RemoteSqlTool.Repository
 
                     if (Convert.ToBoolean(recordAffected))
                     {
+                        var commandResults = new ListDictionary();
                         Console.WriteLine("Data successfully deleted");
+                        commandResults.Add("Delete Command Result", "Data successfully deleted");
+                        deleteDictionary.Add(commandResults);
+                    }
+                    else
+                    {
+                        var commandResults = new ListDictionary();
+                        Console.WriteLine("Data was not deleted");
+                        commandResults.Add("Delete Command Result", "Data was not deleted");
+                        deleteDictionary.Add(commandResults);
                     }
                     
                     conn.Dispose();
@@ -34,7 +44,10 @@ namespace RemoteSqlTool.Repository
             }
             catch(Exception ex)
             {
+                var commandResults = new ListDictionary();
                 ErrorMessages.MessageWhenDeleteStatementHasForeignKeyContstraing(ex);
+                commandResults.Add("Error Log", "Data was not deleted");
+                deleteDictionary.Add(commandResults);
             }
             return deleteDictionary;
         }

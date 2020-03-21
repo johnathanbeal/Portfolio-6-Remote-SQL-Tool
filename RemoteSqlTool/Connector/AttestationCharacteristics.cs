@@ -18,5 +18,27 @@ namespace RemoteSqlTool.Connector
 
         public static List<string> ListOfAttestationCharacteristics = new List<string>() { "Host", "Username", "Password", "Database", "Port" };
 
+        public AttestationCharacteristics()
+        {
+
+        }
+
+        public AttestationCharacteristics(AttestationCharacteristics attestationCharacteristics)
+        {
+            Host = attestationCharacteristics.Host;
+            Username = attestationCharacteristics.Username;
+            Password = attestationCharacteristics.Password;
+            Database = attestationCharacteristics.Database;
+            Port = attestationCharacteristics.Port;
+        }
+
+        public AttestationCharacteristics(string? host, string? username, string? password, string? database, int port)
+        {
+            Host = host;
+            Username = username;
+            Password = password;
+            Database = database;
+            Port = port;
+        }
     }
 }

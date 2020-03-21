@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,36 +15,42 @@ namespace RemoteSqlTool.Repository
         public async Task<List<ListDictionary>> Command(string connString, string _sqlQuery)
         {
             var insertDictionary = new List<ListDictionary>();
-
-            await using NpgsqlConnection conn = new NpgsqlConnection(connString);
-
-            await conn.OpenAsync();
-
-            await using (var cmd = new NpgsqlCommand(_sqlQuery, conn))
+            try
             {
-                cmd.Connection = conn;
+                await using NpgsqlConnection conn = new NpgsqlConnection(connString);
 
-                var lld = ParseSQL.parseInsertSQLReturnColumnsAndValues(_sqlQuery);
+                await conn.OpenAsync();
 
-                foreach (var listDictionary in lld)
+
+                await using (var cmd = new NpgsqlCommand(_sqlQuery, conn))
                 {
-                    ListDictionary localListDictionary = new ListDictionary();
+                    cmd.Connection = conn;
 
-                    foreach (DictionaryEntry entry in localListDictionary)
+                    var lld = ParseSQL.parseInsertSQLReturnColumnsAndValues(_sqlQuery);
+
+                    foreach (var listDictionary in lld)
                     {
-                        var value = TemporalUtility.ConvertCurrentTimestampStringToDateTimeNowString(entry.Value.ToString());
+                        ListDictionary localListDictionary = new ListDictionary();
 
-                        cmd.Parameters.AddWithValue(value, entry.Key.ToString());
+                        foreach (DictionaryEntry entry in listDictionary)
+                        {
+                            var value = TemporalUtility.ConvertCurrentTimestampStringToDateTimeNowString(entry.Value.ToString());
 
-                        localListDictionary.Add(entry.Key.ToString(), value);
+                            cmd.Parameters.AddWithValue(value, entry.Key.ToString());
+
+                            localListDictionary.Add(entry.Key.ToString(), value);
+                        }
+                        insertDictionary.Add(localListDictionary);
                     }
-                    insertDictionary.Add(localListDictionary);
+
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine("Your insert statement was processed");
                 }
-
-                cmd.ExecuteNonQuery();
-                Console.WriteLine("Your insert statement was processed");
             }
-
+            catch (Exception x)
+            {
+                Debug.WriteLine(x);
+            }
             return insertDictionary;
         }
     }

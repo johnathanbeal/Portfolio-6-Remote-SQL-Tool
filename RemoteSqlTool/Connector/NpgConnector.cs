@@ -4,6 +4,7 @@ using System.Text;
 using Npgsql;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace RemoteSqlTool.Connector
 {
@@ -21,7 +22,9 @@ namespace RemoteSqlTool.Connector
             authProps = null;
         }
 
-        public async Task<NpgsqlConnection> connString(string? _host, string? _username, string? _password, string? _database, int _port)
+        public string Host { get; set; }
+
+        public async Task<ConnectionState> connString(string? _host, string? _username, string? _password, string? _database, int _port)
         {
             var hookHost = _host ?? "blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";  // "rolodex.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";  
 
@@ -42,12 +45,18 @@ namespace RemoteSqlTool.Connector
             {
                 Console.WriteLine(e.Message);
             }
+            var connStatus = conn.State;
 
-            return conn;
+            return connStatus;
         }
 
         public string connString(AttestationCharacteristics ac)
         {
+            if (ac is null)
+            {
+                ac = authProps;
+            }
+
             var hookHost = ac.Host ?? "blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";
 
             var ConnString = "Server=" + hookHost + ";Username=" + ac.Username + ";Password=" + ac.Password + ";Database=" + ac.Database + ";Port=" + ac.Port;

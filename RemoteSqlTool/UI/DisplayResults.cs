@@ -42,7 +42,7 @@ namespace RemoteSqlTool.UI
                 }
                 else if (direction.ToLower().Contains("p"))
                 {
-                    if (starterIndex > 10)
+                    if (starterIndex >= 10)
                     {
                         starterIndex -= 10;
                         numberOfRecordsToDisplay -= 10;

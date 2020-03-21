@@ -55,8 +55,5 @@ namespace RemoteSqlTool.UI
             Console.WriteLine("Enter a SQL Query or press q to quit" + System.Environment.NewLine);
             return Console.ReadLine();
         }
-
-
-
     }
 }
