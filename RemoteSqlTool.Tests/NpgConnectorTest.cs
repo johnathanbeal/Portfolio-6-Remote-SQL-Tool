@@ -54,9 +54,9 @@ namespace RemoteSqlTool.Tests
             connString = npgConn.connString(LoginInfo);
 
             setupInsertRepo = new InsertRepo();
-            selectKeysList = new List<string>(new string[] { "firstname", "lastname", "email", "address", "city", "state", "zip" });
+            selectKeysList = new List<string>(new string[] { "firstname", "lastname", "email", "created_date", "address", "city", "state", "zip" });
             selectValuesList = new List<string>(new string[] { "Tyler", "Durden", "jack@gmail.com", "420 Paper St.", "Wilmington", "DE", "19886" });
-            verifyUpdateValuesList = new List<string>(new string[] { "Brad", "Pitt", "brad.pitt@protonmail.com", "08/18/1980" });
+            verifyUpdateValuesList = new List<string>(new string[] { "Brad", "Pitt", "brad.pitt@protonmail.com", "8/18/1980 12:00:00 AM" });
 
             await setupInsertRepo.Command(connString, "Insert into people (firstname, lastname, email, created_date) values ('Robert', 'Paulson', 'hisnameisrobertpaulson@gmail.com', current_timestamp)");
             await setupInsertRepo.Command(connString, "Insert into people (firstname, lastname, email, created_date) values ('Tyler', 'Durden', 'jack@gmail.com', current_timestamp)");
@@ -77,8 +77,8 @@ namespace RemoteSqlTool.Tests
             await teardownDeleteRepo.Command(connString, "Delete from address where address = '506 SW Mill Street, Suite 750'");
 
             await teardownDeleteRepo.Command(connString, "Delete from people where email = 'edward.norton@gmail.com'");
-            await teardownDeleteRepo.Command(connString, "Delete from people where email = 'brad.pitt@protonmail.com");
-
+            await teardownDeleteRepo.Command(connString, "Delete from people where email = 'brad.pitt@protonmail.com'");
+            await teardownDeleteRepo.Command(connString, "Delete from people where email = 'hisnameisrobertpaulson@gmail.com'");
         }
 
         [Test]
@@ -157,24 +157,26 @@ namespace RemoteSqlTool.Tests
             var expectedCount = 4;
 
             selectRepo = new SelectRepo();
-            var selectResult = await selectRepo.Command(connString, "Select address, city, state, zip from address");
+            var selectResult = await selectRepo.Command(connString, "Select address, city, state, zip from address where zip = '19886'");
 
             Assert.IsInstanceOf<List<ListDictionary>>(selectResult);
 
             foreach (ListDictionary selectListDictionary in selectResult)
             {
-                int i = 3;
+                int i = 4;
+                int v = 3;
                 foreach (DictionaryEntry dictionaryEntry in selectListDictionary)
                 {
                     if (dictionaryEntry.Key.ToString() == selectKeysList[i]) 
                     {
-                        if (dictionaryEntry.Value.ToString() == selectValuesList[i])
+                        if (dictionaryEntry.Value.ToString() == selectValuesList[v])
                         {
-                            Assert.AreEqual(dictionaryEntry.Value.ToString(), selectValuesList[i]);
+                            Assert.AreEqual(dictionaryEntry.Value.ToString(), selectValuesList[v]);
                             assertCount++;
                         }
                     }
                     i++;
+                    v++;
                 }
             }
             Assert.AreEqual(expectedCount, assertCount);
@@ -217,7 +219,7 @@ namespace RemoteSqlTool.Tests
 
             foreach (ListDictionary selectListDictionary in selectAddressResult)
             {
-                int i = 3;
+                int i = 4;
                 int v = 0;
                 foreach (DictionaryEntry dictionaryEntry in selectListDictionary)
                 {
