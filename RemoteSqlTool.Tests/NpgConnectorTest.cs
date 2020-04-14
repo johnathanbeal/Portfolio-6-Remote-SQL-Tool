@@ -6,6 +6,7 @@ using RemoteSqlTool.Repository;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Collections;
+using RemoteSqlTool.ignormee;
 
 namespace RemoteSqlTool.Tests
 {
@@ -44,9 +45,9 @@ namespace RemoteSqlTool.Tests
         public async Task Setup()
         {
             Host = "blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com";
-            Username = "postgres";
-            Password = "postgres";
-            Database = "rolodex";
+            Username = Ignore.Username;
+            Password = Ignore.Password;
+            Database = Ignore.Database;
             Port = 5432;
 
             LoginInfo = new AttestationCharacteristics(Host, Username, Password, Database, Port);
