@@ -5,6 +5,7 @@ using Npgsql;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Data;
+using RemoteSqlTool.ignormee;
 
 namespace RemoteSqlTool.Connector
 {
@@ -30,7 +31,7 @@ namespace RemoteSqlTool.Connector
 
             var ConnString = "Server=" + hookHost + ";Username=" + _username + ";Password=" + _password + ";Database=" + _database + ";Port=" + _port;
             
-            var ConString = "Server = blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com; Port = 5432; Database = rolodex; User Id = postgres; Password = postgres";
+            var ConString = "Server = blackbook.c9mrseu2nxwi.us-east-1.rds.amazonaws.com; Port = 5432; Database = " + Ignore.Database + "; User Id = "+ Ignore.Username +"; Password = " + Ignore.Password;
 
 
             var NpgConnString = new NpgsqlConnectionStringBuilder(ConString);
