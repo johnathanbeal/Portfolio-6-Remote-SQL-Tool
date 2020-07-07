@@ -96,3 +96,5 @@ C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool.Tests\obj\Debug\ne
 C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool.Tests\obj\Debug\netcoreapp3.1\RemoteSqlTool.Tests.csproj.CopyComplete
 C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool.Tests\obj\Debug\netcoreapp3.1\RemoteSqlTool.Tests.dll
 C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool.Tests\obj\Debug\netcoreapp3.1\RemoteSqlTool.Tests.pdb
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool.Tests\obj\Debug\netcoreapp3.1\RemoteSqlTool.Tests.csproj.CoreCompileInputs.cache
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool.Tests\obj\Debug\netcoreapp3.1\RemoteSqlTool.Tests.genruntimeconfig.cache

@@ -1,17 +1,5 @@
-﻿using RemoteSqlTool.Connector;
-using RemoteSqlTool.Repository;
-using RemoteSqlTool.UI;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
+﻿using RemoteSqlTool.UI;
 using System.Threading.Tasks;
-using System.Reflection;
-using System.Text;
-using RemoteSqlTool.Entities;
-using System.Collections.Specialized;
-using System.Collections;
-using System.Linq;
 
 namespace RemoteSqlTool
 {
@@ -19,14 +7,15 @@ namespace RemoteSqlTool
     {
         static async Task Main(string[] args)
         {
-            //AttestationCharacteristics databaseAuthorizationInputs = UserInteractions.InitialUserPrompts();
+            var queryWorkflow = new QueryWorkflow();
+            var displayResults = new DisplayResults();
 
-            //NpgConnector NConn = new NpgConnector(databaseAuthorizationInputs);
-            //var NConString = NConn.connString(NConn.authProps);
+            var connectionString = UserInteractions.AskUserForAuthenticationInformation();
+            var sqlCommand = UserInteractions.PromptUserForSqlCommand();
 
-            var NConString = UserInteractions.Startup();
+            var results = await queryWorkflow.ExecuteQuery(connectionString, sqlCommand);
 
-            var results = await QueryWorkflow.EnterQueryAndRun(NConString, new List<ListDictionary>(), true);
+            displayResults.WriteSelectResultsToConsole(results);
         }
     }
 }

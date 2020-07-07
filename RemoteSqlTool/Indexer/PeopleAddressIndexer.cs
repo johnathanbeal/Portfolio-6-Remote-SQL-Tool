@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RemoteSqlTool.Indexer
+﻿namespace RemoteSqlTool.Indexer
 {
     public class PeopleAddressIndexer
     {

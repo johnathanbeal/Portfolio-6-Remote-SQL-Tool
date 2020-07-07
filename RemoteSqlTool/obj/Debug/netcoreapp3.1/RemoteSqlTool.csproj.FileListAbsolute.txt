@@ -11,3 +11,5 @@ C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcorea
 C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp3.1\RemoteSqlTool.csproj.CopyComplete
 C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp3.1\RemoteSqlTool.dll
 C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp3.1\RemoteSqlTool.pdb
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp3.1\RemoteSqlTool.csproj.CoreCompileInputs.cache
+C:\Users\jbeal\source\repos\SDMM2\RemoteSqlTool\RemoteSqlTool\obj\Debug\netcoreapp3.1\RemoteSqlTool.genruntimeconfig.cache

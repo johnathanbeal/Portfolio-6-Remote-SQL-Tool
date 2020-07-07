@@ -1,58 +1,59 @@
 ﻿using RemoteSqlTool.Repository;
-using RemoteSqlTool.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 using System.Threading.Tasks;
 
 
 namespace RemoteSqlTool.UI
 {
-    public static class QueryWorkflow
+    public class QueryWorkflow
     {
-        public static async Task<List<ListDictionary>> EnterQueryAndRun(string NConString, List<ListDictionary> queryResult, bool _keepRunning)       
+        private bool _keepRunning = true;
+        public async Task<List<ListDictionary>> ExecuteQuery(string connectionString, string sqlCommand)       
         {
-
+            List<ListDictionary> queryResult = new List<ListDictionary>();
             while (_keepRunning)
             {
-                var sqlQuery = UserInteractions.ProcessSqlInput();
-                var afterWhere = sqlQuery.ToLower().After("where");
+                var afterWhere = sqlCommand.ToLower().After("where");
                 if (afterWhere.ToLower().Contains("select"))
                 {
                     Console.WriteLine("This application is unable to process statements that have a select in their where clause");
                 }
-                IRepo repo = Util.GetRepoType(sqlQuery);
                 
                 try
                 {
-                    if (sqlQuery.ToLower().Contains("select"))
+                    if (sqlCommand.ToLower().Contains("select"))
                     {
-                        queryResult = await repo.Command(NConString, sqlQuery);
-                        
-                        DisplayResults.WriteSelectResultsToConsole(queryResult);
+                        IRepository repo = new SelectRepository();
+                        return queryResult = await repo.Command(connectionString, sqlCommand);                                                
                     }
-                    else if (sqlQuery.ToLower().Contains("insert"))
+                    else if (sqlCommand.ToLower().Contains("insert"))
                     {
-                        queryResult = await repo.Command(NConString, sqlQuery);
+                        IRepository repo = new InsertRepository();
+                        return queryResult = await repo.Command(connectionString, sqlCommand);
                     }
-                    else if (sqlQuery.ToLower().Contains("delete"))
+                    else if (sqlCommand.ToLower().Contains("delete"))
                     {
-                        queryResult = await repo.Command(NConString, sqlQuery);
+                        IRepository repo = new DeleteRepository();
+                        return queryResult = await repo.Command(connectionString, sqlCommand);
                     }
-                    else if (sqlQuery.ToLower().Contains("update"))
+                    else if (sqlCommand.ToLower().Contains("update"))
                     {
-                        queryResult = await repo.Command(NConString, sqlQuery);
+                        IRepository repo = new UpdateRepository();
+                        return queryResult = await repo.Command(connectionString, sqlCommand);
                     }
-                    else if (sqlQuery.ToLower().Contains("q"))
+                    else if (sqlCommand.ToLower().Contains("q"))
                     {
                         Console.WriteLine("Are you sure you want to quit?");
                         var quitter = Console.ReadLine();
                         if (quitter.ToLower().Contains("y") || quitter.ToLower().Contains("yes"))
                         _keepRunning = false;
+                        return new List<ListDictionary>();
                     }
                     else
-                    {                     
+                    {
+                        return new List<ListDictionary>();
                     }
                 }
                 catch (Exception ex)
@@ -61,8 +62,8 @@ namespace RemoteSqlTool.UI
                     if (ex.Message.Contains("No such host is known") || ex.Message.Contains("Couldn't set port (Parameter 'port')"))
                     {
                         _keepRunning = false;
-                        var ConnString = UserInteractions.Startup();
-                        await EnterQueryAndRun(ConnString, queryResult, true);
+                        var ConnString = UserInteractions.AskUserForAuthenticationInformation();
+                        await ExecuteQuery(ConnString, sqlCommand);
                     }
                 }
             }

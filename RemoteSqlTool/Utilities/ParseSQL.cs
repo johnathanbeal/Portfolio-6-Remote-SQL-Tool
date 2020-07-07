@@ -7,9 +7,9 @@ namespace RemoteSqlTool.Utilities
 {
     public static class ParseSQL
     {
-        public static Dictionary<string, string> parseUpdateSQLReturnColumnsAndValues(string _sqlQuery)
+        public static Dictionary<string, string> parseUpdateSQLReturnColumnsAndValues(string sqlQuery)
         {
-            var afterSetString = _sqlQuery.ToLower().After("set");
+            var afterSetString = sqlQuery.ToLower().After("set");
             string setString = afterSetString; ;
             if (afterSetString.Contains("where"))
             {
@@ -26,15 +26,15 @@ namespace RemoteSqlTool.Utilities
             return columnsAndValues;
         }
 
-        public static List<ListDictionary> parseInsertSQLReturnColumnsAndValues(string _sqlQuery)
+        public static List<ListDictionary> parseInsertSQLReturnColumnsAndValues(string sqlQuery)
         {
             var lld = new List<ListDictionary>();
 
-            var tableAndColumns = _sqlQuery.ToLower().Between("insert into ", " values");
+            var tableAndColumns = sqlQuery.ToLower().Between("insert into ", " values");
 
             var table = tableAndColumns.ToLower().Between("", " (");
 
-            var valuesString = _sqlQuery.ToLower().Between("values (", ")");
+            var valuesString = sqlQuery.ToLower().Between("values (", ")");
 
             var _columns = tableAndColumns.ToLower().Between(table + " (", ")");
             if (_columns == "")
